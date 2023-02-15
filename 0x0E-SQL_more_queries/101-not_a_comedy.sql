@@ -13,4 +13,4 @@ LEFT JOIN
         ORDER BY tv_shows.id
 ) comedy_shows ON comedy_shows.title = tv_shows.title
 WHERE comedy_shows.title is NULL
-ORDER BY tv_shows.title;'
+ORDER BY tv_shows.title;
