@@ -1,48 +1,66 @@
 #include "lists.h"
 
 /**
- * is_palindrome - checks if a sll is a palindrome
- * @head: head of sll
+ * reverse_list - reverses a linked list
+ * @head: pointer to the head of the linked list
  *
- * Return: 1 for true, 0 for false
+ * Return: pointer to the new head of the reversed list
+ */
+listint_t *reverse_list(listint_t *head)
+{
+	listint_t *prev = NULL, *current = head, *next = NULL;
+
+	while (current != NULL)
+	{
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
+	}
+
+	return prev;
+}
+
+/**
+ * is_palindrome - checks if a singly linked list is a palindrome
+ * @head: pointer to the head of the linked list
+ *
+ * Return: 1 if it is a palindrome, 0 otherwise
  */
 int is_palindrome(listint_t **head)
 {
-	int len = 0;
-	int jump, i, j, len_d_2;
-	listint_t *temp1 = (*head);
-	listint_t *temp2 = (*head);
+	listint_t *slow = *head, *fast = *head, *second_half, *prev_slow = *head;
 
-	if (!(*head))
+	if (*head == NULL || (*head)->next == NULL)
 		return (1);
 
-	if (len == 0)
+	// Find the middle of the linked list using slow and fast pointers
+	while (fast != NULL && fast->next != NULL)
 	{
-		while (temp1->next)
-		{
-			temp1 = temp1->next;
-			len++;
-		}
-		len++;
-		if (temp2->n != temp1->n)
-			return (0);
+		fast = fast->next->next;
+		prev_slow = slow;
+		slow = slow->next;
 	}
 
-	if (len == 1)
-		return (1);
+	// If the length of the linked list is odd, move slow one step ahead
+	if (fast != NULL)
+		slow = slow->next;
 
-	len_d_2 = len / 2;
-	jump = len - 1 - 2;
+	// Reverse the second half of the linked list
+	second_half = reverse_list(slow);
 
-	for (i = 1; i < len_d_2; i++, jump -= 2)
+	// Compare the first half and the reversed second half
+	while (second_half != NULL)
 	{
-		temp2 = temp2->next;
-		temp1 = temp2;
-		for (j = 0; j < jump; j++)
-			temp1 = temp1->next;
-		if (temp2->n != temp1->n)
+		if ((*head)->n != second_half->n)
 			return (0);
+
+		*head = (*head)->next;
+		second_half = second_half->next;
 	}
+
+	// Restore the original linked list
+	reverse_list(prev_slow->next);
 	return (1);
-
 }
+
